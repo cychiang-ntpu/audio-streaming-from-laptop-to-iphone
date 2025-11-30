@@ -11,11 +11,16 @@
 
 - [專案簡介](#專案簡介)
 - [快速開始](#快速開始)
+- [完整安裝指南](#完整安裝指南)
+  - [系統準備](#系統準備)
+  - [安裝依賴套件](#安裝依賴套件)
+  - [音訊裝置設定](#音訊裝置設定)
+  - [下載專案腳本](#下載專案腳本)
 - [串流方案](#串流方案)
-- [詳細安裝](#詳細安裝)
 - [使用說明](#使用說明)
-- [常見問題](#常見問題)
+- [常見問題與疑難排解](#常見問題與疑難排解)
 - [進階設定](#進階設定)
+- [效能優化](#效能優化)
 
 ## 🎯 專案簡介
 
@@ -68,7 +73,158 @@ hostname -I
 # 網路 → 輸入: rtsp://<Pi_IP>:8554/mic
 ```
 
-> 💡 **提示**：完整安裝步驟請參考 [RASPBERRY_PI_SETUP.md](RASPBERRY_PI_SETUP.md)
+> 💡 **提示**：若遇到問題，請參考下方[完整安裝指南](#完整安裝指南)和[常見問題](#常見問題與疑難排解)
+
+---
+
+## 📚 完整安裝指南
+
+### 系統準備
+
+#### 安裝 Raspberry Pi OS
+```bash
+# 建議使用 Raspberry Pi OS Lite（64-bit）以節省資源
+# 使用 Raspberry Pi Imager 燒錄到 SD 卡
+# 下載：https://www.raspberrypi.com/software/
+```
+
+#### 首次啟動設定
+```bash
+# 更新系統
+sudo apt-get update
+sudo apt-get upgrade -y
+
+# 設定時區和地區
+sudo raspi-config
+# 選擇: Localisation Options → Timezone
+
+# 連接 WiFi（iPhone 熱點）
+sudo raspi-config
+# 選擇: System Options → Wireless LAN
+# 建議開啟 iPhone「最大相容性」模式
+
+# 查看 Pi IP 位址（通常是 172.20.10.x）
+hostname -I
+# 或更詳細：
+ip addr show wlan0 | grep "inet " | awk '{print $2}' | cut -d/ -f1
+```
+
+### 安裝依賴套件
+
+```bash
+# 基礎套件：FFmpeg 和音訊工具
+sudo apt-get install -y ffmpeg alsa-utils
+
+# Icecast（用於 Icecast 串流方案）
+sudo apt-get install -y icecast2
+
+# Git（用於克隆此專案）
+sudo apt-get install -y git
+
+# 下載 MediaMTX（用於 RTSP 串流方案）
+cd ~
+wget https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_arm64v8.tar.gz
+tar -xzf mediamtx_linux_arm64v8.tar.gz
+chmod +x mediamtx
+
+# 如果是 32-bit 系統（Raspberry Pi OS 32-bit），使用：
+# wget https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_armv7.tar.gz
+# tar -xzf mediamtx_linux_armv7.tar.gz
+```
+
+### 音訊裝置設定
+
+#### 連接 USB 麥克風
+```bash
+# 檢查 USB 麥克風是否被識別
+lsusb
+# 應該看到類似 "USB Audio Device" 的裝置
+
+# 列出音訊裝置
+arecord -l
+
+# 範例輸出：
+# **** List of CAPTURE Hardware Devices ****
+# card 1: Device [USB Audio Device], device 0: USB Audio [USB Audio]
+#   Subdevices: 1/1
+# 代表裝置名稱為 hw:1,0（card 1, device 0）
+```
+
+#### 測試錄音
+```bash
+# 錄製 5 秒測試音訊（使用上面查到的裝置編號）
+arecord -D hw:1,0 -f cd -d 5 test.wav
+
+# 播放測試（如果有連接喇叭或耳機）
+aplay test.wav
+
+# 刪除測試檔案
+rm test.wav
+```
+
+#### 調整音量
+```bash
+# 開啟 ALSA 混音器
+alsamixer
+
+# 操作說明：
+# - 按 F4 切換到錄音裝置（Capture）
+# - 使用方向鍵（↑↓）調整音量
+# - 按 M 取消/設定靜音（避免 "MM" 標記）
+# - 按 ESC 離開
+```
+
+### 下載專案腳本
+
+```bash
+# 方法 1: 使用 Git（推薦）
+cd ~
+git clone https://github.com/cychiang-ntpu/audio-streaming-from-laptop-to-iphone.git
+cd audio-streaming-from-laptop-to-iphone
+git checkout raspberry-pi
+
+# 方法 2: 手動下載（無需 Git）
+# 從 GitHub 下載 ZIP：
+# https://github.com/cychiang-ntpu/audio-streaming-from-laptop-to-iphone/archive/refs/heads/raspberry-pi.zip
+# 解壓縮並進入目錄
+```
+
+### 設定 Icecast（選用，僅 Icecast 方案需要）
+
+```bash
+# 編輯 Icecast 設定
+sudo nano /etc/icecast2/icecast.xml
+
+# 找到並修改以下內容：
+# <source-password>hackme</source-password>  <!-- 與腳本中的密碼一致 -->
+# <hostname>0.0.0.0</hostname>               <!-- 允許外部連線 -->
+
+# 儲存並離開（Ctrl+X, Y, Enter）
+
+# 啟動 Icecast
+sudo systemctl start icecast2
+sudo systemctl enable icecast2  # 開機自動啟動
+```
+
+### 設定防火牆（選用）
+
+```bash
+cd ~/audio-streaming-from-laptop-to-iphone
+chmod +x set_firewall_rules.sh
+./set_firewall_rules.sh
+
+# 如需啟用防火牆，執行：
+# sudo ufw enable
+```
+
+### 賦予腳本執行權限
+
+```bash
+cd ~/audio-streaming-from-laptop-to-iphone
+chmod +x *.sh
+```
+
+---
 
 ## 🎛️ 串流方案
 
@@ -136,60 +292,7 @@ http://<Pi_IP>:8000/stream.mp3
 - ✅ 類似網路電台
 - ❌ 延遲較高（500-1000ms）
 
-## 📦 詳細安裝
-
-### 1. 系統準備
-
-```bash
-# 連接 iPhone 熱點
-sudo raspi-config
-# System Options → Wireless LAN
-
-# 查看 IP（通常是 172.20.10.x）
-hostname -I
-
-# 更新系統
-sudo apt-get update && sudo apt-get upgrade -y
-```
-
-### 2. 安裝依賴
-
-```bash
-# 基礎套件
-sudo apt-get install -y ffmpeg alsa-utils
-
-# Icecast（選用）
-sudo apt-get install -y icecast2
-
-# MediaMTX（RTSP 必需）
-wget https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_arm64v8.tar.gz
-tar -xzf mediamtx_linux_arm64v8.tar.gz
-chmod +x mediamtx
-```
-
-### 3. 音訊裝置設定
-
-```bash
-# 查看麥克風裝置
-arecord -l
-
-# 範例輸出：
-# card 1: Device [USB Audio Device], device 0: USB Audio
-# → 使用 hw:1,0
-
-# 測試錄音（5 秒）
-arecord -D hw:1,0 -f cd -d 5 test.wav
-
-# 調整音量
-alsamixer  # 按 F4 切換到錄音裝置
-```
-
-### 4. 防火牆設定（選用）
-
-```bash
-chmod +x set_firewall_rules.sh
-./set_firewall_rules.sh
-```
+---
 
 ## 📱 使用說明
 
@@ -217,7 +320,9 @@ chmod +x set_firewall_rules.sh
 5. 將值改為 **0** 或 **50**
 6. 重啟 VLC
 
-## ❓ 常見問題
+---
+
+## ❓ 常見問題與疑難排解
 
 <details>
 <summary><strong>找不到麥克風裝置</strong></summary>
@@ -311,6 +416,54 @@ sudo raspi-config
 ```
 </details>
 
+<details>
+<summary><strong>網路連線不穩定</strong></summary>
+
+```bash
+# 檢查 WiFi 訊號強度
+iwconfig wlan0
+
+# 固定 IP 位址（防止 DHCP 變動）
+sudo nano /etc/dhcpcd.conf
+# 加入以下內容：
+# interface wlan0
+# static ip_address=172.20.10.100/24
+# static routers=172.20.10.1
+# static domain_name_servers=8.8.8.8
+
+# 重新啟動網路服務
+sudo systemctl restart dhcpcd
+```
+</details>
+
+<details>
+<summary><strong>音訊有雜音或斷斷續續</strong></summary>
+
+**可能原因與解決方案**：
+
+1. **電源供應不足**：
+   ```bash
+   # 檢查系統訊息
+   dmesg | grep -i usb
+   # 如果看到 "under-voltage" 警告，請使用 2.5A 以上電源
+   ```
+
+2. **CPU 負載過高**：
+   ```bash
+   # 監控 CPU 使用率
+   top
+   # 降低音訊品質或停用其他服務
+   ```
+
+3. **WiFi 干擾**：
+   ```bash
+   # 切換到 5GHz 頻段（如 iPhone 支援）
+   # 或減少附近其他 WiFi 裝置
+   ```
+</details>
+
+---
+
 ## ⚙️ 進階設定
 
 ### 調整音訊參數
@@ -386,18 +539,99 @@ journalctl -u audio-stream -f
 
 ### 固定 IP 位址
 
-防止 DHCP 變動：
+防止 DHCP 變動導致連線中斷：
 ```bash
 sudo nano /etc/dhcpcd.conf
 ```
 
-加入：
+在檔案末尾加入：
 ```ini
 interface wlan0
 static ip_address=172.20.10.100/24
 static routers=172.20.10.1
 static domain_name_servers=8.8.8.8
 ```
+
+重新啟動網路：
+```bash
+sudo systemctl restart dhcpcd
+# 或重新開機
+sudo reboot
+```
+
+---
+
+## 🚀 效能優化
+
+### Pi Zero 2W 特定優化
+
+```bash
+# 1. 停用不必要的服務
+sudo systemctl disable bluetooth       # 停用藍牙
+sudo systemctl disable triggerhappy    # 停用熱鍵服務
+sudo systemctl disable hciuart         # 停用藍牙 UART
+
+# 2. 減少 GPU 記憶體（適用於無桌面環境）
+sudo raspi-config
+# Advanced Options → Memory Split → 設為 16MB
+
+# 3. 降低音訊品質以節省 CPU
+# 編輯對應的 .sh 腳本，將參數修改為：
+-ar 8000 -b:a 16k -ac 1  # 8kHz 單聲道，最低品質但最省資源
+
+# 4. 超頻（僅適用於 Pi Zero 2W，需注意散熱）
+sudo nano /boot/config.txt
+# 加入：
+# over_voltage=2
+# arm_freq=1200
+# 注意：超頻可能導致不穩定，請謹慎使用
+```
+
+### 監控系統資源
+
+```bash
+# CPU 溫度和時脈
+vcgencmd measure_temp
+vcgencmd measure_clock arm
+
+# CPU 使用率（即時）
+htop  # 需先安裝：sudo apt-get install htop
+
+# 記憶體使用情況
+free -h
+
+# 網路流量
+iftop  # 需先安裝：sudo apt-get install iftop
+```
+
+### 自動重啟腳本（防止當機）
+
+```bash
+# 建立監控腳本
+sudo nano /usr/local/bin/stream_watchdog.sh
+```
+
+內容：
+```bash
+#!/bin/bash
+# 檢查串流是否運作，若停止則自動重啟
+
+if ! pgrep -f "ffmpeg.*rtsp" > /dev/null; then
+    echo "$(date): Stream stopped, restarting..." >> /var/log/stream_watchdog.log
+    cd /home/pi/audio-streaming-from-laptop-to-iphone
+    ./rtsp_ffmpeg_push_autodetect.sh &
+fi
+```
+
+設定權限並加入 crontab：
+```bash
+sudo chmod +x /usr/local/bin/stream_watchdog.sh
+crontab -e
+# 加入以下行（每 5 分鐘檢查一次）：
+# */5 * * * * /usr/local/bin/stream_watchdog.sh
+```
+
+---
 
 ## 📚 技術架構
 
@@ -414,21 +648,129 @@ USB 麥克風 → ALSA → FFmpeg 編碼 → 串流協定 → iPhone VLC
 - **Icecast**：HTTP 串流伺服器
 - **Bash**：自動化腳本
 
+## 🎓 使用案例
+
+### 案例 1：家庭嬰兒監視器
+```bash
+# 將 Pi 放在嬰兒房，iPhone 在手邊隨時監聽
+./rtsp_ffmpeg_push_autodetect.sh
+# 延遲低至 30-100ms，即時掌握寶寶狀況
+```
+
+### 案例 2：導覽解說系統
+```bash
+# 導遊使用 Pi + 麥克風，遊客使用 iPhone 收聽
+./icecast_ffmpeg_push_autodetect.sh
+# 支援多人同時收聽，適合團體導覽
+```
+
+### 案例 3：居家練唱監聽
+```bash
+# 在練習室使用 Pi 收音，客廳用 iPhone 監聽
+./http_ffmpeg_push_pcm_autodetect.sh
+# 無損音質，準確評估歌聲表現
+```
+
+### 案例 4：遠端會議麥克風
+```bash
+# Pi 當作高品質麥克風，透過 iPhone 加入會議
+./rtsp_ffmpeg_push_autodetect.sh
+# 低延遲，適合即時對話
+```
+
+---
+
+## 🛠️ 開發與除錯
+
+### 查看詳細日誌
+
+```bash
+# FFmpeg 詳細日誌（加入 -loglevel debug）
+ffmpeg -loglevel debug -f alsa -i hw:1,0 [其他參數...]
+
+# 或將輸出導向檔案
+./rtsp_ffmpeg_push_autodetect.sh 2>&1 | tee stream.log
+
+# 即時查看 systemd 服務日誌
+journalctl -u audio-stream -f
+
+# 查看過去的日誌
+journalctl -u audio-stream --since "1 hour ago"
+```
+
+### 測試網路連線
+
+```bash
+# 測試 RTSP 串流是否正常
+ffplay rtsp://localhost:8554/mic
+
+# 測試 HTTP 串流
+curl -I http://localhost:8080/
+
+# 測試 Icecast
+curl -I http://localhost:8000/stream.mp3
+
+# 檢查埠是否開放
+sudo netstat -tlnp | grep -E '8000|8080|8554'
+```
+
+### 手動編輯麥克風設定
+
+如果自動偵測失敗，可手動編輯腳本：
+```bash
+nano rtsp_ffmpeg_push.sh
+
+# 修改這一行：
+MIC_NAME="hw:1,0"  # 改為你的裝置編號
+```
+
+---
+
 ## 🤝 貢獻
 
 歡迎提交 Issue 或 Pull Request！
+
+### 如何貢獻
+1. Fork 此專案
+2. 建立你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的修改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 開啟 Pull Request
+
+### 回報問題
+請在 [Issues](https://github.com/cychiang-ntpu/audio-streaming-from-laptop-to-iphone/issues) 頁面描述：
+- 你的硬體配置（Pi 型號、USB 麥克風型號）
+- 使用的串流方案
+- 完整的錯誤訊息
+- 已嘗試的解決方法
+
+---
 
 ## 📄 授權
 
 本專案採用 [MIT License](LICENSE)。
 
+---
+
 ## 🔗 相關連結
 
-- [完整安裝指南](RASPBERRY_PI_SETUP.md)
-- [MediaMTX 官網](https://github.com/bluenviron/mediamtx)
-- [FFmpeg 文件](https://ffmpeg.org/documentation.html)
+- [MediaMTX 官方文件](https://github.com/bluenviron/mediamtx)
+- [FFmpeg 官方文件](https://ffmpeg.org/documentation.html)
 - [Raspberry Pi 官網](https://www.raspberrypi.org/)
+- [Icecast 官網](https://icecast.org/)
+- [ALSA 專案](https://www.alsa-project.org/)
+
+---
+
+## 📊 專案統計
+
+![GitHub stars](https://img.shields.io/github/stars/cychiang-ntpu/audio-streaming-from-laptop-to-iphone)
+![GitHub forks](https://img.shields.io/github/forks/cychiang-ntpu/audio-streaming-from-laptop-to-iphone)
+![GitHub issues](https://img.shields.io/github/issues/cychiang-ntpu/audio-streaming-from-laptop-to-iphone)
+![GitHub last commit](https://img.shields.io/github/last-commit/cychiang-ntpu/audio-streaming-from-laptop-to-iphone)
 
 ---
 
 **Made with ❤️ for Raspberry Pi & iPhone**
+
+*如有任何問題或建議，歡迎開啟 Issue 討論！*
