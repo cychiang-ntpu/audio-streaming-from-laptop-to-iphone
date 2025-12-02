@@ -52,6 +52,7 @@
 - Desktop/laptop (用於連線至 Raspberry Pi Zero 2W)
 #### 軟體
 - Raspberry Pi OS on Raspberry Pi Zero 2W (see details at https://www.raspberrypi.com/software/)
+  - 沒有螢幕的 headless 怎麼用使用? https://linnote.com/raspberrypi-headless-setup/ 
 - [VNC](https://www.realvnc.com/en/?lai_vid=53KVGk8BPtKy&lai_sr=10-14&lai_sl=l) (用於由 Desktop/laptop 連線至 Raspberry Pi Zero 2W)
 
 ### 5 分鐘快速部署
