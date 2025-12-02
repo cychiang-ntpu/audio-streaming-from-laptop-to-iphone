@@ -44,10 +44,15 @@
 ## ⚡ 快速開始
 
 ### 前置需求
+#### 硬體
 - Raspberry Pi Zero 2W（或其他型號）
 - USB 麥克風
 - iPhone（作為熱點）
 - MicroSD 卡（16GB+，已安裝 Raspberry Pi OS）
+- Desktop/laptop (用於連線至 Raspberry Pi Zero 2W)
+#### 軟體
+- Raspberry Pi OS on Raspberry Pi Zero 2W (see details at https://www.raspberrypi.com/software/)
+- [VNC](https://www.realvnc.com/en/?lai_vid=53KVGk8BPtKy&lai_sr=10-14&lai_sl=l) (用於由 Desktop/laptop 連線至 Raspberry Pi Zero 2W)
 
 ### 5 分鐘快速部署
 
