@@ -4,7 +4,7 @@ After=multi-user.target sound.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/pi/pi-zero2-sen0526-stereo
+WorkingDirectory=/home/pi/audio-streaming-from-laptop-to-iphone
 Environment=CARD=0
 Environment=DEV=0
 ExecStart=/bin/bash -lc './scripts/record_stereo.sh 3600'
