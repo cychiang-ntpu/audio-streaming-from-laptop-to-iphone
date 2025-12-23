@@ -35,14 +35,14 @@ All Raspberry Pi GPIO pins are **3.3V logic**. Do not feed 5V logic into GPIO.
 ```mermaid
 flowchart LR
   subgraph PI[Raspberry Pi Zero 2 W]
-    P3V3[3.3V (Pin 1/17)]
-    PGND[GND (Pin 6)]
-    PBCLK[GPIO18 / PCM_CLK (Pin 12)]
-    PLR[GPIO19 / PCM_FS (Pin 35)]
-    PDIN[GPIO20 / PCM_DIN (Pin 38)]
+    P3V3[3.3V Pin 1/17]
+    PGND[GND Pin 6]
+    PBCLK[GPIO18 PCM_CLK Pin 12]
+    PLR[GPIO19 PCM_FS Pin 35]
+    PDIN[GPIO20 PCM_DIN Pin 38]
   end
 
-  subgraph L[SEN0526 Mic A (LEFT)]
+  subgraph L[SEN0526 Mic A LEFT]
     L3V3[3V3]
     LGND[GND]
     LSCK[SCK]
@@ -51,7 +51,7 @@ flowchart LR
     LSEL[SEL=LOW]
   end
 
-  subgraph R[SEN0526 Mic B (RIGHT)]
+  subgraph R[SEN0526 Mic B RIGHT]
     R3V3[3V3]
     RGND[GND]
     RSCK[SCK]
@@ -64,18 +64,16 @@ flowchart LR
   P3V3 --> R3V3
   PGND --> LGND
   PGND --> RGND
-
   PBCLK --> LSCK
   PBCLK --> RSCK
   PLR --> LWS
   PLR --> RWS
-
   PDIN --> LDO
   PDIN --> RDO
-
   PGND --> LSEL
   P3V3 --> RSEL
 ```
+
 
 ---
 
