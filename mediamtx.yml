@@ -1,8 +1,0 @@
-rtspAddress: :8554
-readTimeout: 1s
-writeTimeout: 1s
-readBufferCount: 16
-
-paths:
-  mic:
-    source: publisher
