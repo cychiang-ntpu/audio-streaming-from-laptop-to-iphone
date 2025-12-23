@@ -130,3 +130,9 @@ If you want recording to start at boot, see `systemd/stereo-mic-capture.service`
 - Many I2S MEMS mics output 24-bit samples in a 32-bit word. This repo records with `S32_LE` for robustness.
 - Keep I2S wires short and share a solid ground; add local decoupling near each mic.
 
+---
+
+## References
+- [Adafruit I2S MEMS Microphone Breakout - Overview](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/overview)
+- [Setting up I2S Soundcard on Raspberry Pi (INMP441 Microphone)](https://protonestiot.medium.com/setting-up-i2s-soundcard-on-raspberry-pi-inmp441-microphone-f0c8fc859b2e)
+
