@@ -239,9 +239,6 @@ Because only one mic outputs at a time, they can **safely share the same data li
 - [MEMS Microphone Design Guide (Analog Devices)](https://www.analog.com/media/en/technical-documentation/app-notes/AN-1003.pdf) - MEMS mic technology / MEMS 麥克風技術
 - [I2S MEMS Microphones Application Note (Infineon)](https://www.infineon.com/dgdl/Infineon-I2S_Interface-ApplicationNotes-v01_00-EN.pdf?fileId=5546d46250cc1fdf01513f30c4c0567f) - Implementation guide / 實作指南
 
----
-
-## Wiring / 接線
 
 ---
 
@@ -691,6 +688,11 @@ If left and right are swapped / 如果左右聲道相反:
 ---
 
 ## References / 參考資料
+
+### Raspberry Pi Hardware / Raspberry Pi 硬體
+- [Raspberry Pi Zero 2 W Product Brief (Official PDF)](https://datasheets.raspberrypi.com/rpizero2/raspberry-pi-zero-2-w-product-brief.pdf) - Official specs and pinout / 官方規格與接腳圖
+- [Raspberry Pi Zero 2 W Documentation](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) - Product page and resources / 產品頁面與資源
+- [BCM2837 Datasheet](https://datasheets.raspberrypi.com/bcm2837/bcm2837-peripherals.pdf) - Peripheral specifications (GPIO, I2S, etc.) / 周邊規格（GPIO、I2S 等）
 
 ### I2S Protocol & Theory / I2S 協定與原理
 - [I2S Bus Specification (NXP Official PDF)](https://www.nxp.com/docs/en/user-manual/UM10732.pdf) - Original specification from Philips/NXP / 飛利浦/NXP 原始規範
