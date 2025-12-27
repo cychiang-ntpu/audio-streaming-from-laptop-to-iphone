@@ -164,6 +164,12 @@ Build a **high-quality stereo recording and live streaming system** using **Rasp
   - **購買連結 / Where to Buy**:
     - [台灣物聯科技 TaiwanIOT](https://www.taiwaniot.com.tw/product/fermion-i2s-mems-microphone-麥克風模組-dfrobot原廠/?srsltid=AfmBOop4D1TZo9lCu08oUPxjWM6VF2994H_Jx6oOAB1cqKPJXKlwu8VK)
     - [PlayRobot 機器人王國](https://shop.playrobot.com/products/csv0026?srsltid=AfmBOoqvqmqbnrmJ_eIc4jqgpgVz_t7LFSDRDN7dVMwTSK4j4G9IK5sC)
+- **3 x 1分2 1母2公 杜邦接頭**:
+  - **購買連結 / Where to Buy**:
+    - https://shopee.tw/product/5060682/9013675181?gads_t_sig=VTJGc2RHVmtYMTlxTFVSVVRrdENkV0VWVFhpdWZSdFovY2ZoaUJHOTlic2N1dWVHbVI5Q3NpYXVONjR3MlJXemswd2J5emwwVEJSZnZqL1Zta1dmdWJDOEpDYlpxR3JzdVAza09EQ0ZuQzFsQktFT1BJL3RkVEdFdGVwK2RWQUM
+- **2 x 1分3 1母3公 杜邦接頭**:
+  - **購買連結 / Where to Buy**:
+    - https://shopee.tw/product/1618713875/52352370236?gads_t_sig=VTJGc2RHVmtYMTlxTFVSVVRrdENkWlphMUcwMEh2bEZuRkN0RWhtYmloQVdNUFIxZndCUlZ1UjZFMHhUaHBlU1pCK0NhR1RWZmtIR0szUTJCZ0ZUdjFJMzh0OHBlbzVpVmdSODM4VTZFYWxTbTBNQnRpbENuUTdhMUtJU09XWFhwelc4eEVUS0ZZcVdVYjdodExnUldRPT0
 - **(Recommended / 建議)** 1 × **100 kΩ resistor** (DO bus pull-down to GND / DO 匯流排下拉至 GND)
 - **(Recommended / 建議)** 2 × **0.1 µF capacitors** (decoupling near each mic board / 每個麥克風板附近的去耦電容)
 - **Jumper wires** or breadboard / 杜邦線或麵包板
