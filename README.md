@@ -175,6 +175,7 @@ Build a **high-quality stereo recording and live streaming system** using **Rasp
 - **Jumper wires** or breadboard / 杜邦線或麵包板
   - Keep I2S lines short (< 10 cm) / 保持 I2S 線路短 (< 10 cm)
 - **(Optional / 選配)** **UPS Power Module** for portable/mobile use / 行動電源模組（用於行動/移動使用）
+  - Waveshare UPS HAT (C) 原廠: https://www.waveshare.com/wiki/UPS_HAT_(C) 
   - [樹莓派 Zero 專用 UPS 擴充模組（支援邊充邊放）](https://www.meiyagroup.com.tw/product/%E6%A8%B9%E8%8E%93%E6%B4%BE-zero-%E5%B0%88%E7%94%A8-ups-%E6%93%B4%E5%85%85%E6%A8%A1%E7%B5%84%E6%94%AF%E6%8F%B4%E9%82%8A%E5%85%85%E9%82%8A%E6%94%BE/?srsltid=AfmBOoqrzlQwoAVwR8lkNaXd743-JBGDeBgdyAEnAsltz4nGSIljBc3ZOnA) - 美雅群
 
 ---
